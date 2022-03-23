@@ -1,15 +1,20 @@
-import json
+# import json
+# from wsgiref import headers
+
+# from django.forms.models import model_to_dict
 from django.http import JsonResponse
+from products.models import Product
+from products.serializers import ProductSerializers
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 
+@api_view(["POST"])
 def api_home(request, *args, **kwargs):
-    body = request.body
-    data = {}
-    try: 
-        data = json.loads(body) # string of Json data --> Python Dictionary 
-    except: 
-        pass
-    print(data.keys())
-    print(request.headers)
-    print(request.GET) #url query params
-    return JsonResponse(data)
+
+   serializer = ProductSerializers(data=request.data)
+
+   if serializer.is_valid():
+      print(serializer.data)
+      data = serializer.data
+      return JsonResponse(data)
